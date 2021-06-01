@@ -45,6 +45,7 @@ export default {
   data() {
     return {
       teacher: {
+        id:"",
         name: "",
         sort: "",
         level: "",
@@ -61,12 +62,20 @@ export default {
         //从路径中获取值
         const id = this.$route.params.id
         console.log(id)
+        this.getTeacherInfoById(id)
     }
   },
   methods: {
     saveOrUpdate() {
-      //添加
-      this.saveTeacher();
+      //判断id是否存在值
+      if(this.teacher.id){
+        console.log("======================")
+        //更新操作
+        this.updateTeacher()
+      }else{
+        //添加
+        this.saveTeacher();
+      }
     },
     //添加讲师方法
     saveTeacher() {
@@ -81,10 +90,23 @@ export default {
         this.$router.push({ path: "/teacher" });
       });
     },
+    //根据id获取讲师信息
     getTeacherInfoById(id){
         teacher.getTeaInfoId(id).then(response => {
             console.log(response)
+            this.teacher = response.data.eduTeacher
         })
+    },
+    //根据id更新讲师
+    updateTeacher(){
+      teacher.updateTeacher(this.teacher).then(response => {
+        //回到页面
+        this.$message({
+          type: "success",
+          message: "修改成功！"
+        });
+        this.$router.push({ path: "/teacher" });
+      })
     }
   }
 };

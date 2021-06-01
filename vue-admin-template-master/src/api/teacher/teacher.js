@@ -36,8 +36,15 @@ export default {
     },
     getTeaInfoId(id){
         return request({
-            url: '/eduservice/edu-teacher/addteacher',
+            url: '/eduservice/edu-teacher/info/' + id,
             method: 'get'
+        })
+    },
+    updateTeacher(teacher){
+        return request({
+            url: '/eduservice/edu-teacher/update',
+            method: 'post',
+            data: teacher
         })
     }
 
