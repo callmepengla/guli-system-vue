@@ -24,7 +24,29 @@
         <el-input v-model="teacher.intro" :rows="10" type="textarea"></el-input>
       </el-form-item>
 
-      <!-- 讲师头像 -->
+      <!-- 讲师头像:TODO -->
+      <el-form-item label="讲师头像">
+          <!-- 头衔缩略图 -->
+          <pan-thumb :image="teacher.avatar"/>
+          <!-- 文件上传按钮 -->
+          <el-button type="primary" icon="el-icon-upload" @click="imagecropperShow=true">更换头像</el-button>
+          <!-- 
+              v-show  是否显示上传组建
+              :key  类似于id，如果一个页面多个图片上传控件，可以做区分
+              :url  后台上传的URL地址
+              @close  关闭上传组件
+              @crop-upload-success  上传成功后的回调
+           -->
+          <image-cropper
+              v-show="imagecropperShow"
+              :width="300"
+              :height="300"
+              :key="imagecropperKey"
+              :url="BASE_API + '/eduoss/filsoss'"
+              field="file"
+              @close="close"
+              @crop-upload-success="cropSuccess"/>
+      </el-form-item>
     </el-form>
     <div class="btn-box">
       <el-button
@@ -41,7 +63,10 @@
 </template>
 <script>
 import teacher from "@/api/teacher/teacher";
+import ImageCropper from '@/components/ImageCropper'
+import PanThumb from '@/components/PanThumb'
 export default {
+  components: {ImageCropper, PanThumb},
   data() {
     return {
       teacher: {
@@ -53,7 +78,10 @@ export default {
         intro: "",
         avatar: ""
       },
-      saveBtnDisabled: false //保存按钮是否禁用，主要是为了防止多次提交，防抖
+      saveBtnDisabled: false, //保存按钮是否禁用，主要是为了防止多次提交，防抖
+      imagecropperShow: false,//上传弹框组件是否显示
+      imagecropperKey: 0, //上传组件key值
+      BASE_API: process.env.BASE_API //获取dev.env.js里面的地址
     };
   },
   created() { //页面渲染之前处理
@@ -107,6 +135,17 @@ export default {
         });
         this.$router.push({ path: "/teacher" });
       })
+    },
+    //关闭上传弹框的方法
+    close(){
+        this.imagecropperShow = false
+    },
+    //上传成功的方法
+    cropSuccess(data){
+        //关闭弹框
+        this.imagecropperShow = false
+        //上传之后接口返回图片地址
+        this.teacher.avatar = data.url
     }
   }
 };
