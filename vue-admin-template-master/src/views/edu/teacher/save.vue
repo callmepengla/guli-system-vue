@@ -139,6 +139,8 @@ export default {
     //关闭上传弹框的方法
     close(){
         this.imagecropperShow = false
+        //上传组件初始化
+        this.imagecropperKey = this.imagecropperKey + 1
     },
     //上传成功的方法
     cropSuccess(data){
@@ -146,6 +148,8 @@ export default {
         this.imagecropperShow = false
         //上传之后接口返回图片地址
         this.teacher.avatar = data.url
+        //上传组件初始化
+        this.imagecropperKey = this.imagecropperKey + 1
     }
   }
 };
